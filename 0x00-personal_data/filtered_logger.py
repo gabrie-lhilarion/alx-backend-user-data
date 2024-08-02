@@ -104,3 +104,20 @@ def get_db() -> MySQLConnection:
         database=database
     )
 
+def main() -> None:
+    """
+    Main function to retrieve and log data
+    from the users table.
+    """
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM users")
+
+    logger = get_logger()
+    
+    for row in cursor:
+        message = "; ".join(f"{k}={v}" for k, v in row.items())
+        logger.info(message)
+
+    cursor.close()
+    db.close()

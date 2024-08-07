@@ -38,7 +38,14 @@ class Auth:
         Method to get the authorization header from the request.
         Currently returns None as a placeholder.
         """
-        return None
+        if request is None:
+            return None
+
+        auth_header = request.headers.get("Authorization")
+        if auth_header is None:
+            return None
+
+        return auth_header
 
     def current_user(self, request=None) -> User:
         """

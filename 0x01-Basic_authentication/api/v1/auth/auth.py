@@ -4,7 +4,7 @@ Auth module for API authentication management
 """
 from flask import request
 from typing import List, TypeVar
-# from models.user import User
+from fnmatch import fnmatch
 
 User = TypeVar('User')
 
@@ -20,15 +20,12 @@ class Auth:
         if path is None:
             return True
 
-        if not excluded_paths:
+        if excluded_paths is None or not excluded_paths:
             return True
 
-        # Ensure path always ends with a slash for comparison
-        if not path.endswith('/'):
-            path += '/'
-
-        for ex_path in excluded_paths:
-            if ex_path.endswith('/') and ex_path == path:
+        path = path.rstrip('/')
+        for excluded_path in excluded_paths:
+            if fnmatch(path, excluded_path.rstrip('/')):
                 return False
 
         return True

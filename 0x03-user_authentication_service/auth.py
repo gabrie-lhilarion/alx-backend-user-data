@@ -57,6 +57,20 @@ class Auth:
 
             return user
 
+    def _hash_password(self, password: str) -> bytes:
+        """
+        Hashes a password string using bcrypt and returns the salted hash.
+
+        Args:
+            password (str): The password string to hash.
+
+        Returns:
+            bytes: The salted hash of the input password.
+        """
+        salt = bcrypt.gensalt()
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+        return hashed_password
+
     def valid_login(self, email: str, password: str) -> bool:
         """
         Validate the user's login credentials.
@@ -75,3 +89,31 @@ class Auth:
             )
         except NoResultFound:
             return False
+    
+    def create_session(self, email: str) -> str:
+        """
+        Create a new session for the user identified by the provided email.
+
+        Args:
+            email (str): The user's email address.
+
+        Returns:
+            str: The session ID (UUID) for the new session.
+
+        Raises:
+            NoResultFound: If no user with the provided email is found.
+        """
+        try:
+            # Find the user by email
+            user = self._db.find_user_by(email=email)
+            
+            # Generate a new UUID for the session ID
+            session_id = self._generate_uuid()
+            
+            # Update the user's session_id with the new UUID
+            self._db.update_user(user.id, session_id=session_id)
+            
+            # Return the session ID
+            return session_id
+        except NoResultFound:
+            return None

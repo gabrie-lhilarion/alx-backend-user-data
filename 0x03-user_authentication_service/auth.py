@@ -89,7 +89,7 @@ class Auth:
             )
         except NoResultFound:
             return False
-    
+
     def create_session(self, email: str) -> str:
         """
         Create a new session for the user identified by the provided email.
@@ -106,15 +106,14 @@ class Auth:
         try:
             # Find the user by email
             user = self._db.find_user_by(email=email)
-            
+
             # Generate a new UUID for the session ID
             session_id = self._generate_uuid()
-            
+
             # Update the user's session_id with the new UUID
             self._db.update_user(user.id, session_id=session_id)
-            
+
             # Return the session ID
             return session_id
         except NoResultFound:
             return None
-

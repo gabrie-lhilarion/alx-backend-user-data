@@ -4,6 +4,7 @@ This module defines the Auth class for handling user
 registration and authentication.
 """
 
+import uuid
 import bcrypt
 from db import DB
 from db import User
@@ -16,6 +17,17 @@ class Auth:
 
     def __init__(self):
         self._db = DB()
+
+    def _generate_uuid(self) -> str:
+        """
+        Generate a new UUID.
+
+        This method is private and should not be used outside the auth module.
+
+        Returns:
+            str: The string representation of a new UUID.
+        """
+        return str(uuid.uuid4())
 
     def register_user(self, email: str, password: str) -> User:
         """

@@ -52,6 +52,7 @@ def register_user():
     except ValueError:
         return jsonify({"message": "email already registered"}), 400
 
+
 @app.route('/sessions', methods=['POST'])
 def login():
     """
@@ -83,6 +84,7 @@ def login():
     response.set_cookie("session_id", session_id)
 
     return response
+
 
 if __name__ == "__main__":
     """

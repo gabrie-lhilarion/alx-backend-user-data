@@ -7,6 +7,7 @@ for the User model. It includes methods to initialize the database and
 add new users to the database.
 """
 
+import bcrypt
 from sqlalchemy import create_engine
 from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm.exc import NoResultFound
@@ -41,6 +42,20 @@ class DB:
             self.__session = DBSession()
         return self.__session
 
+    def _hash_password(self, password: str) -> bytes:
+        """
+        Hashes a password string using bcrypt and returns the salted hash.
+
+        Args:
+            password (str): The password string to hash.
+
+        Returns:
+            bytes: The salted hash of the input password.
+        """
+        salt = bcrypt.gensalt()
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+        return hashed_password
+    
     def add_user(self, email: str, hashed_password: str) -> User:
         """
         Adds a new user to the database.

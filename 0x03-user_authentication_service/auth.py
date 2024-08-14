@@ -41,4 +41,8 @@ class Auth:
             user = self._db.add_user(
                 email=email, hashed_password=hashed_password.decode('utf-8')
             )
-            return user
+            user_dict = {
+                "id": user.id,
+                "email": user.email,
+            }
+            return user_dict

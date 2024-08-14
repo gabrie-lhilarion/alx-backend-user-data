@@ -55,7 +55,7 @@ class DB:
         salt = bcrypt.gensalt()
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
         return hashed_password
-    
+
     def add_user(self, email: str, hashed_password: str) -> User:
         """
         Adds a new user to the database.

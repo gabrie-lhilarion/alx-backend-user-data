@@ -8,6 +8,7 @@ add new users to the database.
 """
 
 from sqlalchemy import create_engine
+from sqlalchemy.orm.exc import NoResultFound, InvalidRequestError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
@@ -55,3 +56,26 @@ class DB:
         session.add(new_user)
         session.commit()
         return new_user
+
+    def find_user_by(self, **kwargs) -> User:
+        """
+        Find a user in the database by arbitrary keyword arguments.
+
+        Args:
+            **kwargs: Arbitrary keyword arguments representing the field(s)
+                      and value(s) to filter the users.
+
+        Returns:
+            User: The first User object that matches the criteria.
+
+        Raises:
+            NoResultFound: If no user is found with the specified criteria.
+            InvalidRequestError: If invalid query arguments are provided.
+        """
+        try:
+            user = self._session.query(User).filter_by(**kwargs).one()
+            return user
+        except NoResultFound:
+            raise NoResultFound("No user found with the provided criteria.")
+        except InvalidRequestError:
+            raise InvalidRequestError("Invalid query arguments provided.")

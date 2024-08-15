@@ -15,7 +15,9 @@ def register_user(email: str, password: str) -> None:
     Register a user with the provided email and password.
     Asserts that the response has the correct status code and payload.
     """
-    response = requests.post(f"{BASE_URL}/users", data={"email": email, "password": password})
+    response = requests.post(
+        f"{BASE_URL}/users", data={"email": email, "password": password}
+    )
     assert response.status_code == 200
     assert response.json() == {"email": email, "message": "user created"}
 
@@ -25,7 +27,9 @@ def log_in_wrong_password(email: str, password: str) -> None:
     Attempt to log in with the wrong password.
     Asserts that the response has the correct status code.
     """
-    response = requests.post(f"{BASE_URL}/sessions", data={"email": email, "password": password})
+    response = requests.post(
+        f"{BASE_URL}/sessions", data={"email": email, "password": password}
+    )
     assert response.status_code == 401
 
 
@@ -35,7 +39,9 @@ def log_in(email: str, password: str) -> str:
     Asserts that the response has the correct status code and payload.
     Returns the session ID.
     """
-    response = requests.post(f"{BASE_URL}/sessions", data={"email": email, "password": password})
+    response = requests.post(
+        f"{BASE_URL}/sessions", data={"email": email, "password": password}
+    )
     assert response.status_code == 200
     session_id = response.cookies.get("session_id")
     assert session_id is not None
@@ -79,7 +85,9 @@ def reset_password_token(email: str) -> str:
     Asserts that the response has the correct status code and payload.
     Returns the reset token.
     """
-    response = requests.post(f"{BASE_URL}/reset_password", data={"email": email})
+    response = requests.post(
+        f"{BASE_URL}/reset_password", data={"email": email}
+    )
     assert response.status_code == 200
     reset_token = response.json().get("reset_token")
     assert reset_token is not None
@@ -91,7 +99,11 @@ def update_password(email: str, reset_token: str, new_password: str) -> None:
     Update the password using the reset token.
     Asserts that the response has the correct status code and payload.
     """
-    data = {"email": email, "reset_token": reset_token, "new_password": new_password}
+    data = {
+        "email": email,
+        "reset_token": reset_token,
+        "new_password": new_password
+    }
     response = requests.put(f"{BASE_URL}/reset_password", data=data)
     assert response.status_code == 200
     assert response.json() == {"email": email, "message": "Password updated"}

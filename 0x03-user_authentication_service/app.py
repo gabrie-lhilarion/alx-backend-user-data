@@ -87,6 +87,35 @@ def login():
     return response
 
 
+@app.route("/profile", methods=["GET"])
+def profile() -> str:
+    """
+    Handle profile retrieval for a logged-in user.
+
+    This route expects the session ID to be provided as a cookie.
+    If the session is valid, it returns the user's email. If the session is invalid,
+    a 403 status code is returned.
+
+    Returns:
+        str: A JSON response with the user's email or a 403 error.
+    """
+    # Retrieve the session ID from cookies
+    session_id = request.cookies.get('session_id')
+
+    # If session ID is missing or invalid, respond with a 403 status code
+    if not session_id:
+        abort(403)
+
+    # Find the user associated with the session ID
+    user = AUTH.get_user_from_session_id(session_id)
+
+    if user is None:
+        abort(403)
+
+    # Return the user's email with a 200 status
+    return jsonify({"email": user.email})
+
+
 @app.route("/sessions", methods=["DELETE"])
 def logout() -> None:
     """

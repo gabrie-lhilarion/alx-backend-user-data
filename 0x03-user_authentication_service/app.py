@@ -160,6 +160,35 @@ def index() -> str:
     return jsonify({"message": "Bienvenue"})
 
 
+@app.route('/reset_password', methods=['POST'])
+def get_reset_password_token():
+    """
+    POST /reset_password route to generate a password reset token.
+
+    Expects form data with an "email" field.
+    If the email is not registered, responds with a 403 status code.
+    Otherwise, generates a reset token and responds with a 200 status code
+    and a JSON payload containing the email and reset token.
+
+    Returns:
+        Response: JSON response with the email and reset token or an error.
+    """
+    # Get the email from the form data
+    email = request.form.get('email')
+    if not email:
+        abort(400, description="Email is required")
+
+    try:
+        # Generate the reset token
+        reset_token = AUTH.get_reset_password_token(email)
+    except ValueError:
+        # If the email is not registered, respond with a 403 status code
+        abort(403)
+
+    # Return the JSON response with the email and reset token
+    return jsonify({"email": email, "reset_token": reset_token}), 200
+
+
 if __name__ == "__main__":
     """
     Run the Flask app on the local server.

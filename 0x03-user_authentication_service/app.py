@@ -93,8 +93,8 @@ def profile() -> str:
     Handle profile retrieval for a logged-in user.
 
     This route expects the session ID to be provided as a cookie.
-    If the session is valid, it returns the user's email. If the session is invalid,
-    a 403 status code is returned.
+    If the session is valid, it returns the user's email.
+    If the session is invalid, a 403 status code is returned.
 
     Returns:
         str: A JSON response with the user's email or a 403 error.

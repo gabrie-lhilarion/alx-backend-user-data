@@ -49,7 +49,7 @@ def register_user():
 
     try:
         user = AUTH.register_user(email, password)
-        return jsonify({"email": user.email, "message": "user created"})
+        return jsonify({"email": user.email, "message": "user created"}), 200
     except ValueError:
         return jsonify({"message": "email already registered"}), 400
 
@@ -81,7 +81,9 @@ def login():
     session_id = AUTH.create_session(email)
 
     # Prepare the response with the session ID set as a cookie
-    response = make_response(jsonify({"email": email, "message": "logged in"}))
+    response = make_response(
+        jsonify({"email": email, "message": "logged in"}), 200
+    )
     response.set_cookie("session_id", session_id)
 
     return response
@@ -207,7 +209,7 @@ def update_password():
 
     # Validate required fields
     if not email or not reset_token or not new_password:
-        return jsonify({"message": "Missing fields"}), 403
+        return jsonify({"message": "Missing fields"}), 400
 
     try:
         # Update the password

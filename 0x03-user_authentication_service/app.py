@@ -188,13 +188,14 @@ def get_reset_password_token():
     # Return the JSON response with the email and reset token
     return jsonify({"email": email, "reset_token": reset_token}), 200
 
+
 @app.route('/reset_password', methods=['PUT'])
 def update_password():
     """
     Update password endpoint to handle PUT /reset_password requests.
 
     Expects form data with 'email', 'reset_token', and 'new_password'.
-    
+
     Returns:
         - 200 HTTP status and a JSON payload on success.
         - 403 HTTP status if the reset token is invalid.
@@ -217,6 +218,7 @@ def update_password():
 
     # Respond with success if password is updated
     return jsonify({"email": email, "message": "Password updated"}), 200
+
 
 if __name__ == "__main__":
     """

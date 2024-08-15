@@ -6,9 +6,9 @@ registration and authentication.
 
 import uuid
 import bcrypt
-from db import DB
-from db import User
+from db import DB, User
 from sqlalchemy.orm.exc import NoResultFound
+from typing import Optional
 
 
 class Auth:
@@ -17,6 +17,27 @@ class Auth:
 
     def __init__(self):
         self._db = DB()
+
+    def get_user_from_session_id(self, session_id: Optional[str]) -> Optional[User]:
+        """
+        Retrieve a User from the database using a session ID.
+
+        Args:
+            session_id (str): The session ID used to find the user.
+
+        Returns:
+            User: The User object if found, or None if no user is found or if
+            session_id is None.
+        """
+        if session_id is None:
+            return None
+
+        try:
+            user = self._db.find_user_by(session_id=session_id)
+        except Exception:
+            return None
+
+        return user
 
     def _generate_uuid(self) -> str:
         """
@@ -117,3 +138,19 @@ class Auth:
             return session_id
         except NoResultFound:
             return None
+
+    def destroy_session(self, user_id: int) -> None:
+        """
+        Destroy a user's session by setting their session ID to None.
+
+        Args:
+            user_id (int): The ID of the user whose session is to be destroyed.
+
+        Returns:
+            None
+        """
+        try:
+            user = self._db.find_user_by(id=user_id)
+            self._db.update_user(user.id, session_id=None)
+        except Exception:
+            pass

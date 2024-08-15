@@ -186,3 +186,29 @@ class Auth:
             self._db.update_user(user.id, session_id=None)
         except Exception:
             pass
+
+    def update_password(self, reset_token: str, password: str) -> None:
+        """
+        Update the user's password.
+
+        Args:
+            reset_token (str): The reset token associated with the user.
+            password (str): The new password to be hashed and saved.
+
+        Raises:
+            ValueError: If the reset_token does not match any user.
+        """
+        try:
+            # Find the user by reset_token
+            user = self._db.find_user_by(reset_token=reset_token)
+        except NoResultFound:
+            # Raise an error if no user is found with the reset_token
+            raise ValueError("Invalid reset token")
+
+        # Hash the new password
+        hashed_password = self._hash_password(password)
+
+        # Update the user's password and reset_token
+        self._db.update_user(
+            user.id, hashed_password=hashed_password, reset_token=None
+        )

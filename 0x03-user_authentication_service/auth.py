@@ -18,7 +18,9 @@ class Auth:
     def __init__(self):
         self._db = DB()
 
-    def get_user_from_session_id(self, session_id: Optional[str]) -> Optional[User]:
+    def get_user_from_session_id(
+            self, session_id: Optional[str]
+    ) -> Optional[User]:
         """
         Retrieve a User from the database using a session ID.
 

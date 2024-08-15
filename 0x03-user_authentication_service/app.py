@@ -6,7 +6,8 @@ This script sets up a Flask web server with a single route ("/")
 that returns a welcome message in JSON format.
 """
 
-from flask import Flask, jsonify, request, abort, make_response
+from flask import Flask, jsonify, request, abort
+from flask import make_response, redirect, url_for
 from auth import Auth
 
 # Instantiate the Auth object
@@ -84,6 +85,50 @@ def login():
     response.set_cookie("session_id", session_id)
 
     return response
+
+
+@app.route("/sessions", methods=["DELETE"])
+def logout() -> None:
+    """
+    Handle user logout by destroying the session.
+
+    This route expects the session ID to be provided as a cookie.
+    If the session is valid, it will be destroyed and the user
+    will be redirected to the home page. If the session is invalid,
+    a 403 status code is returned.
+
+    Returns:
+        None
+    """
+    # Retrieve the session ID from cookies
+    session_id = request.cookies.get('session_id')
+
+    # If session ID is missing or invalid, respond with a 403 status code
+    if not session_id:
+        abort(403)
+
+    # Find the user associated with the session ID
+    user = AUTH.get_user_from_session_id(session_id)
+
+    if user is None:
+        abort(403)
+
+    # Destroy the user's session
+    AUTH.destroy_session(user.id)
+
+    # Redirect the user to the home page
+    return redirect(url_for("index"))
+
+
+@app.route("/", methods=["GET"])
+def index() -> str:
+    """
+    Home route that welcomes the user.
+
+    Returns:
+        str: A simple welcome message.
+    """
+    return jsonify({"message": "Bienvenue"})
 
 
 if __name__ == "__main__":

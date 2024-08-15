@@ -207,7 +207,7 @@ def update_password():
 
     # Validate required fields
     if not email or not reset_token or not new_password:
-        return jsonify({"message": "Missing fields"}), 400
+        return jsonify({"message": "Missing fields"}), 403
 
     try:
         # Update the password
